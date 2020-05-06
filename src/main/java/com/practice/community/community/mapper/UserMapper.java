@@ -1,4 +1,4 @@
-package com.practice.community.community.Mapper;
+package com.practice.community.community.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.practice.community.community.model.User;
@@ -10,4 +10,7 @@ import org.apache.ibatis.annotations.Select;
 public interface UserMapper extends BaseMapper<User> {
     @Select("select * from user where token = #{token}")
     User findByToken(@Param("token") String token);
+
+    @Select("select * from user where id = #{id}")
+    User finById(@Param("id") Integer id);
 }
