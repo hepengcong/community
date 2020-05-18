@@ -8,6 +8,6 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
-    @Select("select * from sys_user where account = #{userName}")
+    @Select("select * from sys_user where account = #{username}")
     SysUser findByName(@Param("username") String username);
 }

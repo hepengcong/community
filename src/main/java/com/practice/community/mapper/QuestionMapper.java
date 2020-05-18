@@ -1,7 +1,7 @@
 package com.practice.community.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.practice.community.model.Question;
+import com.practice.community.entity.Question;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

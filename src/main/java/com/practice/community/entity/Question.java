@@ -1,4 +1,4 @@
-package com.practice.community.model;
+package com.practice.community.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;

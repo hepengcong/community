@@ -3,7 +3,7 @@ package com.practice.community.controller;
 import com.practice.community.mapper.UserMapper;
 import com.practice.community.dto.AccessTokenDTO;
 import com.practice.community.dto.GithubUser;
-import com.practice.community.model.User;
+import com.practice.community.entity.User;
 import com.practice.community.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

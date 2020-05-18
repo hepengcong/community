@@ -2,7 +2,7 @@ package com.practice.community.service;
 
 import com.practice.community.dto.GithubUser;
 import com.practice.community.mapper.UserMapper;
-import com.practice.community.model.User;
+import com.practice.community.entity.User;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

@@ -1,7 +1,7 @@
 package com.practice.community.interceptor;
 
 import com.practice.community.mapper.UserMapper;
-import com.practice.community.model.User;
+import com.practice.community.entity.User;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;

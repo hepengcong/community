@@ -1,6 +1,7 @@
 package com.practice.community.config.handler;
 
 import com.alibaba.fastjson.JSON;
+import com.practice.community.config.service.vo.SysUserVo;
 import com.practice.community.entity.SysUser;
 import com.practice.community.service.SysUserService;
 import com.practice.community.util.JsonResult;
@@ -25,13 +26,12 @@ public class CustomizeAuthenticationSuccessHandler implements AuthenticationSucc
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SysUserVo user = (SysUserVo) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SysUser sysUser = sysUserService.findByName(user.getUsername());
         sysUser.setLastLoginTime(new Date());
         sysUser.setUpdateTime(new Date());
         sysUser.setUpdateUser(sysUser.getId());
         sysUserService.update(sysUser);
-
         JsonResult result = ResultTool.success();
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(JSON.toJSONString(result));

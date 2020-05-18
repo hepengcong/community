@@ -10,8 +10,12 @@ import javax.annotation.Resource;
 public class SysPermissionService {
     @Resource
     SysPermissionMapper sysPermissionMapper;
+
     public SysPermission findById(Integer id){
         return sysPermissionMapper.findById(id);
     }
 
+
+    public void selectListByPath(String requestUrl) {
+    }
 }

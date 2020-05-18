@@ -1,5 +1,6 @@
 package com.practice.community.config.service;
 
+import com.practice.community.config.service.vo.SysUserVo;
 import com.practice.community.entity.SysPermission;
 import com.practice.community.entity.SysUser;
 import com.practice.community.service.SysPermissionService;
@@ -7,8 +8,6 @@ import com.practice.community.service.SysRolePermissionRelationService;
 import com.practice.community.service.SysUserService;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -24,7 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Resource
     SysPermissionService sysPermissionService;
     @Override
-    public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
+    public SysUserVo loadUserByUsername(String userName) throws UsernameNotFoundException {
         if (userName==null||"".equals(userName))
             throw new RuntimeException("user not exist");
         SysUser sysUser= sysUserService.findByName(userName);
@@ -32,13 +31,18 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new RuntimeException("sysUser not exist");
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         if (sysUser!=null) {
-            Integer[] str = sysRolePermissionRelationService.findAllPermissionById(sysUser.getId());
-            for (Integer id : str) {
-                SysPermission sysPermission=sysPermissionService.findById(id);
+            Integer[] permissionId=sysRolePermissionRelationService.findAllPermissionById(sysUser.getId());
+            List<SysPermission> sysPermissions = new ArrayList<>();
+            for (Integer integer : permissionId) {
+                sysPermissions.add(sysPermissionService.findById(integer));
+            }
+            // 声明用户授权
+            sysPermissions.forEach(sysPermission -> {
                 GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(sysPermission.getPermissionCode());
                 grantedAuthorities.add(grantedAuthority);
-            }
+            });
         }
-        return new User(sysUser.getAccount(), sysUser.getPassword(), sysUser.getEnabled(), sysUser.getAccountNonExpired(), sysUser.getCredentialsNonExpired(), sysUser.getAccountNonLocked(), grantedAuthorities);
+
+        return new SysUserVo(sysUser.getId(),sysUser.getAccount(), sysUser.getPassword(),sysUser.getAccountNonExpired(),sysUser.getAccountNonLocked(),sysUser.getCredentialsNonExpired(),sysUser.getEnabled(),grantedAuthorities);
     }
 }
