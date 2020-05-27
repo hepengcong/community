@@ -10,6 +10,5 @@ import java.util.List;
 
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
     @Select("select * from sys_permission where Id=#{Id}")
-
     SysPermission findById(@Param("Id") Integer Id);
 }

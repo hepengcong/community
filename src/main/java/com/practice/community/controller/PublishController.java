@@ -3,12 +3,13 @@ package com.practice.community.controller;
 import com.practice.community.Enum.ResultCode;
 import com.practice.community.dto.QuestionDTO;
 import com.practice.community.entity.Question;
-import com.practice.community.entity.Reply;
 import com.practice.community.service.QuestionService;
-import com.practice.community.service.ReplyService;
 import com.practice.community.util.JsonResult;
 import com.practice.community.util.SecurityUtil;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 

@@ -1,10 +1,10 @@
 package com.practice.community.config;
 
 import com.practice.community.config.handler.*;
+import com.practice.community.config.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import com.practice.community.config.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CustomizeLogoutSuccessHandler customizeLogoutSuccessHandler;
     @Autowired
     CustomizeAuthenticationEntryPoint authenticationEntryPoint;
+
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -61,13 +61,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authenticationEntryPoint(authenticationEntryPoint).
                 //匿名用户访问无权限资源时的异常处理
                 // 登出
-        and().logout().
+                        and().logout().
                 permitAll().//允许所有用户
                 logoutSuccessHandler(customizeLogoutSuccessHandler).
                 //登出成功处理逻辑
-                deleteCookies("JSESSIONID").
+                        deleteCookies("JSESSIONID").
                 //登出之后删除cookie
-       and().formLogin()
+                        and().formLogin()
                 //开启登录
                 .successHandler(customizeAuthenticationSuccessHandler)
                 // 登录成功
@@ -75,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 登录失败
                 .permitAll().
 
-        and().sessionManagement().
+                and().sessionManagement().
                 maximumSessions(1).
                 expiredSessionStrategy(customizeSessionInformationExpiredStrategy);
 

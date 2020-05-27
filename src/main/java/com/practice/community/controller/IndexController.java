@@ -5,9 +5,7 @@ import com.practice.community.dto.QuestionDTO;
 import com.practice.community.service.QuestionService;
 import com.practice.community.util.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class IndexController {
@@ -19,5 +17,14 @@ public class IndexController {
         return new JsonResult(true, ResultCode.SUCCESS,questionService.list(query));
     }
 
+    @GetMapping("/question/detail")
+    public JsonResult detail(@RequestParam Integer id){
+        return new JsonResult(true,ResultCode.SUCCESS,questionService.selectById(id));
+    }
+
+    @RequestMapping("/question/hot")
+    public JsonResult hotQuestion(){
+        return new JsonResult(true,ResultCode.SUCCESS,questionService.getHot());
+    }
 
 }

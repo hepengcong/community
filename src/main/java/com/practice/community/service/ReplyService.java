@@ -11,6 +11,8 @@ import com.practice.community.mapper.QuestionMapper;
 import com.practice.community.mapper.ReplyMapper;
 import com.practice.community.util.SecurityUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,37 +29,39 @@ public class ReplyService {
     public void insert(Reply reply) {
         reply.setCreateTime(new Date());
         reply.setCreatorId(SecurityUtil.getUserId());
+        questionMapper.updateComment(reply.getQuestionId());
         replyMapper.insert(reply);
     }
 
     public void delete(Reply reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
         wrapper.eq("creator_id", SecurityUtil.getUserId())
-                .eq("id",reply.getId())
+                .eq("id", reply.getId())
                 .eq("question_id", reply.getQuestionId());
         replyMapper.delete(wrapper);
     }
 
-
+    @Cacheable(value = "List<Reply>", unless = "#result eq null ")
     public List<Reply> listByTime(ReplyDTO reply) {
-        Page<Reply> page = new Page<>(reply.getPage(),reply.getSize());
-        QueryWrapper<Reply> wrapper=new QueryWrapper<>();
+        Page<Reply> page = new Page<>(reply.getPage(), reply.getSize());
+        QueryWrapper<Reply> wrapper = new QueryWrapper<>();
 
 //        replyMapper.listByTime(reply,SecurityUtil.getUserId());
 //        BeanUtils.copyProperties(page,iPage);
-        List<Reply> list=replyMapper.listByTime(reply,SecurityUtil.getUserId());
-        BeanUtils.copyProperties(list,wrapper);
+        List<Reply> list = replyMapper.listByTime(reply, SecurityUtil.getUserId());
+        BeanUtils.copyProperties(list, wrapper);
         wrapper.orderByDesc("create_time");
-        IPage<Reply> iPage= replyMapper.selectPage(page,wrapper);
+        IPage<Reply> iPage = replyMapper.selectPage(page, wrapper);
         return iPage.getRecords();
     }
 
+    @Cacheable(value = "List<Reply>", unless = "#result eq null ")
     public List<Reply> list(ReplyDTO reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
-        wrapper.eq("question_id",reply.getQuestionId());
+        wrapper.eq("question_id", reply.getQuestionId());
         wrapper.orderByAsc("create_time");
-        Page<Reply> page = new Page<>(reply.getPage(),reply.getSize());
-        IPage<Reply> iPage= replyMapper.selectPage(page,wrapper);
+        Page<Reply> page = new Page<>(reply.getPage(), reply.getSize());
+        IPage<Reply> iPage = replyMapper.selectPage(page, wrapper);
         return iPage.getRecords();
     }
 }

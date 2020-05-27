@@ -4,14 +4,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
+/**
+ * @author helium
+ */
 @Data
-public class User {
+public class SysRequest {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-    private String accountId;
-    private String name;
-    private String token;
-    private Long gmtCreate;
-    private Long gmtModified;
-    private String avatarUrl;
+    private String url;
+    private String description;
 }

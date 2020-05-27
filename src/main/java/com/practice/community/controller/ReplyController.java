@@ -1,11 +1,11 @@
 package com.practice.community.controller;
 
-import com.baomidou.mybatisplus.extension.api.R;
 import com.practice.community.Enum.ResultCode;
 import com.practice.community.dto.ReplyDTO;
 import com.practice.community.entity.Reply;
 import com.practice.community.service.ReplyService;
 import com.practice.community.util.JsonResult;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -30,12 +30,13 @@ public class ReplyController {
     }
 
     @GetMapping("/replies")
-    public JsonResult replies(@RequestBody ReplyDTO reply){
-        return new JsonResult(true, ResultCode.SUCCESS,replyService.list(reply));
+    public JsonResult replies(@RequestBody ReplyDTO reply) {
+        return new JsonResult(true, ResultCode.SUCCESS, replyService.list(reply));
 
     }
+
     @RequestMapping("/recent")
-    public JsonResult recent(@RequestBody ReplyDTO reply){
-        return new JsonResult(true, ResultCode.SUCCESS,replyService.listByTime(reply));
+    public JsonResult recent(@RequestBody ReplyDTO reply) {
+        return new JsonResult(true, ResultCode.SUCCESS, replyService.listByTime(reply));
     }
 }
