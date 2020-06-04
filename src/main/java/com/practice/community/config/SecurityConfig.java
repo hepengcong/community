@@ -1,86 +1,146 @@
+/*
+ *  Copyright 2019-2020 Zheng Jie
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.practice.community.config;
 
-import com.practice.community.config.handler.*;
-import com.practice.community.config.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.practice.community.config.annotation.AnonymousAccess;
+import com.practice.community.config.handler.JwtAccessDeniedHandler;
+import com.practice.community.config.handler.JwtAuthenticationEntryPoint;
+import com.practice.community.config.handler.TokenConfigurer;
+import com.practice.community.config.handler.TokenProvider;
+
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * @author Zheng Jie
+ */
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    CustomizeAuthenticationFailureHandler customizeAuthenticationFailureHandler;
-    @Autowired
-    CustomizeSessionInformationExpiredStrategy customizeSessionInformationExpiredStrategy;
-    @Autowired
-    CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler;
-    @Autowired
-    CustomizeLogoutSuccessHandler customizeLogoutSuccessHandler;
-    @Autowired
-    CustomizeAuthenticationEntryPoint authenticationEntryPoint;
+    private final TokenProvider tokenProvider;
+    private final CorsFilter corsFilter;
+    private final JwtAuthenticationEntryPoint authenticationErrorHandler;
+    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+    private final ApplicationContext applicationContext;
 
+
+    public SecurityConfig(TokenProvider tokenProvider, CorsFilter corsFilter, JwtAuthenticationEntryPoint authenticationErrorHandler, JwtAccessDeniedHandler jwtAccessDeniedHandler, ApplicationContext applicationContext) {
+        this.tokenProvider = tokenProvider;
+        this.corsFilter = corsFilter;
+        this.authenticationErrorHandler = authenticationErrorHandler;
+        this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
+        this.applicationContext = applicationContext;
+    }
 
     @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        // 设置默认的加密方式（强hash方式加密）
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        // 去除 ROLE_ 前缀
+        return new GrantedAuthorityDefaults("");
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        // 密码加密方式
         return new BCryptPasswordEncoder();
     }
 
     @Override
-    @Bean
-    public UserDetailsService userDetailsService() {
-        //获取用户账号密码及权限信息
-        return new UserDetailsServiceImpl();
+    protected void configure(HttpSecurity httpSecurity) throws Exception {
+        // 搜寻匿名标记 url： @AnonymousAccess
+        Map<RequestMappingInfo, HandlerMethod> handlerMethodMap = applicationContext.getBean(RequestMappingHandlerMapping.class).getHandlerMethods();
+        Set<String> anonymousUrls = new HashSet<>();
+        for (Map.Entry<RequestMappingInfo, HandlerMethod> infoEntry : handlerMethodMap.entrySet()) {
+            HandlerMethod handlerMethod = infoEntry.getValue();
+            AnonymousAccess anonymousAccess = handlerMethod.getMethodAnnotation(AnonymousAccess.class);
+            if (null != anonymousAccess) {
+                anonymousUrls.addAll(infoEntry.getKey().getPatternsCondition().getPatterns());
+            }
+        }
+        httpSecurity
+                // 禁用 CSRF
+                .csrf().disable()
+                .addFilterBefore(corsFilter, UsernamePasswordAuthenticationFilter.class)
+                // 授权异常
+                .exceptionHandling()
+                .authenticationEntryPoint(authenticationErrorHandler)
+                .accessDeniedHandler(jwtAccessDeniedHandler)
+
+                // 防止iframe 造成跨域
+                .and()
+                .headers()
+                .frameOptions()
+                .disable()
+
+                // 不创建会话
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and()
+                .authorizeRequests()
+                // 静态资源等等
+                .antMatchers(
+                        HttpMethod.GET,
+                        "/*.html",
+                        "/**/*.html",
+                        "/**/*.css",
+                        "/**/*.js",
+                        "/webSocket/**"
+                ).permitAll()
+                // swagger 文档
+                .antMatchers("/swagger-ui.html").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/*/api-docs").permitAll()
+                // 文件
+                .antMatchers("/avatar/**").permitAll()
+                .antMatchers("/file/**").permitAll()
+                // 阿里巴巴 druid
+                .antMatchers("/druid/**").permitAll()
+                // 放行OPTIONS请求
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                // 自定义匿名访问所有url放行 ： 允许匿名和带权限以及登录用户访问
+                .antMatchers(anonymousUrls.toArray(new String[0])).permitAll()
+                // 所有请求都需要认证
+                .anyRequest().authenticated()
+                .and().apply(securityConfigurerAdapter());
     }
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-
-        //配置认证方式
-        auth.userDetailsService(userDetailsService());
-
+    private TokenConfigurer securityConfigurerAdapter() {
+        return new TokenConfigurer(tokenProvider);
     }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable();
-        http.authorizeRequests().
-                antMatchers("/publish").hasAuthority("query_user").
-                //异常处理(权限拒绝、登录失效等)
-                        and().exceptionHandling().
-                authenticationEntryPoint(authenticationEntryPoint).
-                //匿名用户访问无权限资源时的异常处理
-                // 登出
-                        and().logout().
-                permitAll().//允许所有用户
-                logoutSuccessHandler(customizeLogoutSuccessHandler).
-                //登出成功处理逻辑
-                        deleteCookies("JSESSIONID").
-                //登出之后删除cookie
-                        and().formLogin()
-                //开启登录
-                .successHandler(customizeAuthenticationSuccessHandler)
-                // 登录成功
-                .failureHandler(customizeAuthenticationFailureHandler)
-                // 登录失败
-                .permitAll().
-
-                and().sessionManagement().
-                maximumSessions(1).
-                expiredSessionStrategy(customizeSessionInformationExpiredStrategy);
-
-
-    }
-
-
 }

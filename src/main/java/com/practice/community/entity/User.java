@@ -8,6 +8,7 @@ import lombok.Data;
 public class User {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
+    private String password;
     private String accountId;
     private String name;
     private String token;

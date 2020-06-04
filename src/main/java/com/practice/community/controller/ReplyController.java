@@ -5,6 +5,7 @@ import com.practice.community.dto.ReplyDTO;
 import com.practice.community.entity.Reply;
 import com.practice.community.service.ReplyService;
 import com.practice.community.util.JsonResult;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 

@@ -12,6 +12,7 @@ import com.practice.community.mapper.ReplyMapper;
 import com.practice.community.util.SecurityUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ public class ReplyService {
     @Resource
     QuestionMapper questionMapper;
 
+    @CachePut(value = "my-redis-cache1", unless = "#result eq null")
     public void insert(Reply reply) {
         reply.setCreateTime(new Date());
         reply.setCreatorId(SecurityUtil.getUserId());
@@ -33,6 +35,7 @@ public class ReplyService {
         replyMapper.insert(reply);
     }
 
+    @CacheEvict(value = "my-redis-cache1", condition = "#result eq true")
     public void delete(Reply reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
         wrapper.eq("creator_id", SecurityUtil.getUserId())
@@ -41,7 +44,7 @@ public class ReplyService {
         replyMapper.delete(wrapper);
     }
 
-    @Cacheable(value = "List<Reply>", unless = "#result eq null ")
+    @Cacheable(value = "my-redis-cache1", unless = "#result eq null")
     public List<Reply> listByTime(ReplyDTO reply) {
         Page<Reply> page = new Page<>(reply.getPage(), reply.getSize());
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
@@ -55,7 +58,7 @@ public class ReplyService {
         return iPage.getRecords();
     }
 
-    @Cacheable(value = "List<Reply>", unless = "#result eq null ")
+    @Cacheable(value = "my-redis-cache1", unless = "#result eq null")
     public List<Reply> list(ReplyDTO reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
         wrapper.eq("question_id", reply.getQuestionId());
