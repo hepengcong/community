@@ -27,7 +27,6 @@ public class ReplyService {
     @Resource
     QuestionMapper questionMapper;
 
-    @CachePut(value = "my-redis-cache1", unless = "#result eq null")
     public void insert(Reply reply) {
         reply.setCreateTime(new Date());
         reply.setCreatorId(SecurityUtil.getUserId());
@@ -35,7 +34,6 @@ public class ReplyService {
         replyMapper.insert(reply);
     }
 
-    @CacheEvict(value = "my-redis-cache1", condition = "#result eq true")
     public void delete(Reply reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
         wrapper.eq("creator_id", SecurityUtil.getUserId())
@@ -44,7 +42,6 @@ public class ReplyService {
         replyMapper.delete(wrapper);
     }
 
-    @Cacheable(value = "my-redis-cache1", unless = "#result eq null")
     public List<Reply> listByTime(ReplyDTO reply) {
         Page<Reply> page = new Page<>(reply.getPage(), reply.getSize());
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
@@ -58,7 +55,6 @@ public class ReplyService {
         return iPage.getRecords();
     }
 
-    @Cacheable(value = "my-redis-cache1", unless = "#result eq null")
     public List<Reply> list(ReplyDTO reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
         wrapper.eq("question_id", reply.getQuestionId());

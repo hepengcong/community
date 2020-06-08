@@ -14,7 +14,6 @@ public class IndexController {
     @Autowired
     QuestionService questionService;
 
-    @PreAuthorize("hasAuthority('ROLE_Admin')")
     @RequestMapping("/index")
     public JsonResult index(@RequestBody QuestionDTO query) {
         return new JsonResult(true, ResultCode.SUCCESS,questionService.list(query));
