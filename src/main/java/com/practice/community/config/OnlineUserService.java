@@ -16,7 +16,7 @@
 package com.practice.community.config;
 
 import com.practice.community.entity.EncryptUtils;
-import com.practice.community.entity.JwtUserDto;
+import com.practice.community.dto.JwtUserDto;
 import com.practice.community.entity.OnlineUser;
 import com.practice.community.util.FileUtil;
 import com.practice.community.util.PageUtil;

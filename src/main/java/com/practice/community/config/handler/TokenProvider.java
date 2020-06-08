@@ -24,7 +24,6 @@ import com.practice.community.util.RedisUtils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -52,12 +51,14 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 @RequiredArgsConstructor
+
 public class TokenProvider implements InitializingBean {
 
-   private final SecurityProperties properties;
    private final RedisUtils redisUtils;
+   private final SecurityProperties properties;
    private static final String AUTHORITIES_KEY = "auth";
    private Key key;
+
 
    @Override
    public void afterPropertiesSet() {
@@ -78,6 +79,8 @@ public class TokenProvider implements InitializingBean {
               .setId(IdUtil.simpleUUID())
               .compact();
    }
+
+
 
    Authentication getAuthentication(String token) {
       Claims claims = Jwts.parser()

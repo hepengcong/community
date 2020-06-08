@@ -13,14 +13,22 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.practice.community.entity;
+package com.practice.community.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.practice.community.entity.OnlineUser;
+import com.practice.community.entity.User;
 import lombok.Data;
+import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Zheng Jie
@@ -29,13 +37,26 @@ import java.util.Collection;
 @Data
 public class JwtUserDto implements UserDetails {
 
-    private final User user;
+    private User user;
+    private Collection<? extends GrantedAuthority> authorities;
 
+
+    public JwtUserDto(User user) {
+        this.user = user;
+        authorities = Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+    }
+
+    public JwtUserDto(OnlineUser onlineUser) {
+        BeanUtils.copyProperties(onlineUser,user);
+    }
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        return authorities;
     }
+
 
     @Override
     @JsonIgnore

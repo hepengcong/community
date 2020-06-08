@@ -15,11 +15,10 @@
  */
 package com.practice.community.config;
 
-import com.practice.community.entity.JwtUserDto;
+import com.practice.community.dto.JwtUserDto;
 import com.practice.community.entity.User;
 import com.practice.community.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +32,7 @@ import javax.annotation.Resource;
 @Service("userDetailsService")
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
+    @Resource
     UserMapper userMapper;
 
     @Override

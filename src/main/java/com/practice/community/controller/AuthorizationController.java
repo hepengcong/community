@@ -15,18 +15,16 @@
  */
 package com.practice.community.controller;
 
-import cn.hutool.core.util.IdUtil;
 import com.practice.community.config.OnlineUserService;
 import com.practice.community.config.SecurityProperties;
 import com.practice.community.config.annotation.AnonymousAccess;
 import com.practice.community.config.handler.TokenProvider;
 import com.practice.community.entity.AuthUser;
-import com.practice.community.entity.JwtUserDto;
+import com.practice.community.dto.JwtUserDto;
 import com.practice.community.util.RedisUtils;
 import com.practice.community.util.SecurityUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,7 +37,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Zheng Jie
@@ -48,14 +45,13 @@ import java.util.concurrent.TimeUnit;
  */
 @Slf4j
 @RestController
-@RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthorizationController {
 
-    @Value("${loginCode.expiration}")
-    private Long expiration;
-    @Value("${single.login:false}")
-    private Boolean singleLogin;
+//    @Value("${loginCode.expiration}")
+//    private Long expiration;
+//    @Value("${single.login:false}")
+    private Boolean singleLogin=false;
     private final SecurityProperties properties;
     private final RedisUtils redisUtils;
     private final OnlineUserService onlineUserService;
