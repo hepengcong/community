@@ -136,8 +136,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 自定义匿名访问所有url放行 ： 允许匿名和带权限以及登录用户访问
                 .antMatchers(anonymousUrls.toArray(new String[0])).permitAll()
                 // 所有请求都需要认证
-                .anyRequest().authenticated()
-                .and().apply(securityConfigurerAdapter());
+//                .anyRequest().authenticated()
+//                .and().apply(securityConfigurerAdapter());
+
+                .anyRequest().permitAll();
     }
 
     private TokenConfigurer securityConfigurerAdapter() {
