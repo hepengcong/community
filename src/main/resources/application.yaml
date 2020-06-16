@@ -12,9 +12,9 @@ spring:
       name: admin
       password: admin
   redis:
-#    host: 139.196.21.25
-    port: 6379
-    host: 127.0.0.1
+    host: 139.196.21.25
+    port: 6371
+#    host: http://139.196.21.25/
 #    password: root:123456
 
 security:

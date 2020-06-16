@@ -1,19 +1,14 @@
 package com.practice.community.service;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.practice.community.dto.ReplyDTO;
-import com.practice.community.entity.Question;
 import com.practice.community.entity.Reply;
 import com.practice.community.mapper.QuestionMapper;
 import com.practice.community.mapper.ReplyMapper;
 import com.practice.community.util.SecurityUtil;
 import org.springframework.beans.BeanUtils;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
