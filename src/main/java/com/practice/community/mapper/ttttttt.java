@@ -1,4 +1,4 @@
 package com.practice.community.mapper;
 
-public interface testMapper {
+public interface ttttttt {
 }
