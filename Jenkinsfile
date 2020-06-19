@@ -7,6 +7,38 @@ pipeline {
 
   }
   stages {
+
+
+      stage('deliver') {
+        agent any
+        environment {
+          PATH = '/usr/bin'
+        }
+        steps {
+          sshagent(credentials: ['dev_host']) {
+            withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
+             def remote = [:]
+                      remote.name = "dev_serve"
+                      remote.host = "139.196.21.25"
+                      remote.allowAnyHosts = true
+                      remote.user = "$username"
+                      remote.password = "$password"
+
+            sshCommand remote: remote, command: "ls"
+               withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+               sh 'docker login registry.vena.network -u $user -p $pass'
+               }
+            }
+
+          }
+
+        }
+      }
+
+
+
+
+
     stage('built') {
       steps {
         sh 'mvn clean package'
@@ -36,28 +68,7 @@ pipeline {
       }
     }
 
-    stage('deliver') {
-      agent any
-      environment {
-        PATH = '/usr/bin'
-      }
-      steps {
-        sshagent(credentials: ['dev_host']) {
-          withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
-             script {
-                     COMMANDS = "ls"
-                     sh "sshpass -p $PASSWORD ssh -A -o StrictHostKeyChecking=no -T $USERNAME@$SERVER '$COMMANDS'"
-                   }
 
-             withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
-             sh 'docker login registry.vena.network -u $user -p $pass'
-             }
-          }
-
-        }
-
-      }
-    }
 
   }
 }
