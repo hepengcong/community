@@ -30,7 +30,7 @@ pipeline {
     stage('image') {
       agent any
       steps {
-        sh '''cd /var/jenkins_home
+        sh '''cd /var/jenkins_home/workspace/community_master/src/main/java/com/practice/community
 docker build -t communitydemo .'''
       }
     }
