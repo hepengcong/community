@@ -12,9 +12,9 @@ pipeline {
          remote.user=$username
          remote.password=$password
 
-         sshCommand remote: hel, command: "ls"
-         }
 
+         }
+         sshCommand remote: hel, command: "ls"
          }
       }
     }
