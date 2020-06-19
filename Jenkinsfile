@@ -1,9 +1,13 @@
 pipeline {
-  agent any
+  agent none
   stages {
     stage('built') {
-      environment {
-        maven = '-v /root/.m2:/root/.m2'
+      agent {
+        docker {
+          image 'maven:3.6.3'
+          args '-v /root/.m2:/root/.m2'
+        }
+
       }
       steps {
         sh 'mvn clean package'
@@ -11,8 +15,12 @@ pipeline {
     }
 
     stage('test') {
-      environment {
-        maven = '-v /root/.m2:/root/.m2'
+      agent {
+        docker {
+          image 'maven:3.6.3'
+          args '-v /root/.m2:/root/.m2'
+        }
+
       }
       steps {
         sh 'mvn test'
