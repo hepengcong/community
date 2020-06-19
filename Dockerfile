@@ -1,6 +1,6 @@
 FROM java:8
 
-COPY /target/*.jar /target/app.jar
+COPY *.jar ./app.jar
 
 CMD ["server port : 8080"]
 
