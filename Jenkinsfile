@@ -45,6 +45,7 @@ pipeline {
         sshagent(credentials: ['deliver_host']) {
           withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
             sh 'docker login registry.vena.network -u $user -p $pass'
+            sshCommand 'root@139.196.21.2'
           }
 
         }
