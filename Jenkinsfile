@@ -28,15 +28,10 @@ pipeline {
     }
 
     stage('image') {
-      agent {
-        docker {
-          args '-v /root/.m2:/root/.m2'
-          image 'jenkins'
-        }
-
-      }
+      agent any
       steps {
-        sh 'docker build -t communitydemo .'
+        sh '''cd /var/jenkins_home
+docker build -t communitydemo .'''
       }
     }
 
