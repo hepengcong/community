@@ -30,8 +30,8 @@ pipeline {
     stage('image') {
       agent {
         docker {
-          image 'maven:3.6.3'
           args '-v /root/.m2:/root/.m2'
+          image 'jenkins'
         }
 
       }
@@ -43,8 +43,7 @@ pipeline {
     stage('push') {
       agent {
         docker {
-          args '-v /root/.m2:/root/.m2'
-          image 'maven'
+          image '50c5ba2ce935'
         }
 
       }
