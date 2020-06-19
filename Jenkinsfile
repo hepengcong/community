@@ -28,12 +28,14 @@ pipeline {
     }
 
     stage('image') {
+      agent any
       steps {
         sh 'docker build -t communitydemo .'
       }
     }
 
     stage('push') {
+      agent any
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
           sh 'docker login registry.vena.network -u $user -p $pass'
@@ -45,6 +47,7 @@ pipeline {
     }
 
     stage('deliver') {
+      agent any
       steps {
         sshagent(credentials: ['dev_host']) {
           sh 'ssh root@139.196.21.25'
