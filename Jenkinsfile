@@ -26,12 +26,6 @@ pipeline {
     }
 
     stage('push') {
-      agent {
-        docker {
-          image '50c5ba2ce935'
-        }
-
-      }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
           sh 'docker login registry.vena.network -u $user -p $pass'
