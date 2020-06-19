@@ -42,9 +42,16 @@ pipeline {
         PATH = '/usr/bin'
       }
       steps {
-        sshagent(credentials: ['deliver_host']) {
-          withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
-            sh 'docker login registry.vena.network -u $user -p $pass'
+        sshagent(credentials: ['dev_host']) {
+          withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+             script {
+                     COMMANDS = "ls"
+                     sh "sshpass -p $PASSWORD ssh -A -o StrictHostKeyChecking=no -T $USERNAME@$SERVER '$COMMANDS'"
+                   }
+
+             withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+             sh 'docker login registry.vena.network -u $user -p $pass'
+             }
           }
 
         }
