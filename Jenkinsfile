@@ -1,23 +1,46 @@
 pipeline {
-  agent any
+  agent none
   stages {
-    stage('dev') {
-      steps {
-         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
-         script{
-         def remote = [:]
-         remote.name="hel"
-         remote.host="139.196.21.25"
-         remote.allowAnyHosts = true
-         remote.user=$username
-         remote.password=$password
+             stage('built') {
+                  steps {
+                    sh 'mvn clean package'
+                  }
+                }
+
+                 stage('test') {
+                      steps {
+                        sh 'mvn test'
+                      }
+                    }
+
+                 stage('image') {
+                   steps {
+                     sh 'docker build -t communitydemo .'
+                   }
+                 }
 
 
-         }
-         sshCommand remote: hel, command: "ls"
-         }
-      }
-    }
+                  stage('push') {
+                       steps {
+                         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                           sh 'docker login registry.vena.network -u $user -p $pass'
+                           sh 'docker tag communitydemo registry.vena.network/xbaas/communitydemo '
+                           sh 'docker push registry.vena.network/xbaas/communitydemo'
+                         }
+
+                       }
+                     }
+
+
+                stage('deliver'){
+                steps{
+                    sshagent(credentials: ['dev_host']) {
+                    sh 'ssh root@139.196.21.25'
+
+                    }
+
+                }
+                }
 
   }
 }
