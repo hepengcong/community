@@ -20,15 +20,8 @@ pipeline {
     }
 
     stage('image') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile'
-        }
-
-      }
       steps {
-        sh '''cd /var/jenkins_home/workspace/community_master
-docker build -t communitydemo .'''
+        sh 'docker build -t communitydemo .'
       }
     }
 
