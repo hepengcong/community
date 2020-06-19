@@ -37,6 +37,7 @@ pipeline {
     }
 
     stage('deliver') {
+      agent any
       steps {
         sshagent(credentials: ['dev_host']) {
           sh 'ssh root@139.196.21.25'
