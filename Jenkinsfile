@@ -37,7 +37,13 @@ pipeline {
     }
 
     stage('deliver') {
-      agent any
+      agent {
+        docker {
+          image 'jenkins'
+          args '-u root -p 8080:8080 -v /var/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+
+      }
       steps {
         sshagent(credentials: ['dev_host']) {
           sh 'ssh root@139.196.21.25'
