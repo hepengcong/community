@@ -27,9 +27,10 @@ pipeline {
 
     stage('push') {
       steps {
-        withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
-            sh 'docker login registry.vena.network -u $user -p $pass'
+        withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+          sh 'docker login registry.vena.network -u $user -p $pass'
         }
+
       }
     }
 
