@@ -39,6 +39,7 @@ pipeline {
     stage('deliver') {
       steps {
         sshagent(credentials: ['deliver_host']) {
+          sh 'pwd'
           sh 'sudo ssh root@139.196.21.25'
           withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
             sh 'docker login registry.vena.network -u $user -p $pass'
