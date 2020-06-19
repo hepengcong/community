@@ -39,7 +39,7 @@ pipeline {
     stage('deliver') {
       steps {
         sshagent(credentials: ['deliver_host']) {
-          sh '''$export PATH=/usr/bin:$PATH
+          sh '''cd /usr/bin
 '''
           sh 'ssh root@139.196.21.25'
           withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
