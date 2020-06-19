@@ -1,5 +1,11 @@
 pipeline {
-  agent none
+  agent {
+    docker {
+      image 'maven'
+      args '-v /root/.m2:/root/.m2'
+    }
+
+  }
   stages {
     stage('built') {
       agent {
@@ -28,12 +34,6 @@ pipeline {
     }
 
     stage('image') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile'
-        }
-
-      }
       steps {
         sh '''cd /var/jenkins_home/workspace/community_master/target
 docker build -t communitydemo .'''
