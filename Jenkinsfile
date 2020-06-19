@@ -19,5 +19,19 @@ pipeline {
       }
     }
 
+    stage('image') {
+      steps {
+        sh 'docker build -t communitydemo .'
+      }
+    }
+
+    stage('push') {
+      steps {
+        sh 'docker login registry.vena.network'
+        input(message: 'Username', id: '1', submitterParameter: 'xbaas')
+        input(message: 'Password', id: '2', submitterParameter: 'XBaaS@2020')
+      }
+    }
+
   }
 }
