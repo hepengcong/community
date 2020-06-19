@@ -1,8 +1,7 @@
 pipeline {
   agent {
-    docker {
-      image 'maven'
-      args '-v /root/.m2:/root/.m2'
+    node {
+      label 'master'
     }
 
   }
@@ -37,12 +36,6 @@ pipeline {
     }
 
     stage('deliver') {
-      agent {
-        node {
-          label 'master'
-        }
-
-      }
       steps {
         sshagent(credentials: ['dev_host']) {
           sh 'ssh root@139.196.21.25'
