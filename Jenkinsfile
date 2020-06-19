@@ -33,5 +33,18 @@ pipeline {
       }
     }
 
+    stage('deliver') {
+      steps {
+        sshagent(['deliver_host']) {
+            sh 'ssh root@139.196.21.25'
+            step {
+                   withCredentials([usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                   sh 'docker login registry.vena.network -u $user -p $pass'
+                  }
+              }
+        }
+      }
+    }
+
   }
 }
