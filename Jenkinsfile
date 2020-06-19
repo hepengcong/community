@@ -1,9 +1,21 @@
 pipeline {
   agent any
   stages {
-    stage('') {
+    stage('dev') {
       steps {
-        sh 'clean package'
+         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
+         script{
+         def remote = [:]
+         remote.name="hel"
+         remote.host="139.196.21.25"
+         remote.allowAnyHosts = true
+         remote.user=$username
+         remote.password=$password
+
+         sshCommand remote: hel, command: "ls"
+         }
+
+         }
       }
     }
 
