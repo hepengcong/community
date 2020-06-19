@@ -28,14 +28,26 @@ pipeline {
     }
 
     stage('image') {
-      agent any
+      agent {
+        docker {
+          image 'maven:3.6.3'
+          args '-v /root/.m2:/root/.m2'
+        }
+
+      }
       steps {
         sh 'docker build -t communitydemo .'
       }
     }
 
     stage('push') {
-      agent any
+      agent {
+        docker {
+          args '-v /root/.m2:/root/.m2'
+          image 'maven'
+        }
+
+      }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
           sh 'docker login registry.vena.network -u $user -p $pass'
