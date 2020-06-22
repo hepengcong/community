@@ -28,7 +28,9 @@ pipeline {
       }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
-          sh 'ssh root@139.196.21.25 -u $username -p $password'
+          sh '''pwd
+whoami
+ssh root@139.196.21.25 -u $username -p $password'''
         }
 
       }
