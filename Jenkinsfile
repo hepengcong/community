@@ -45,10 +45,7 @@ pipeline {
 
       }
       steps {
-        sshagent(credentials: ['dev_host']) {
-          sh 'ssh root@139.196.21.25'
-        }
-
+        sh 'ssh root@139.196.21.25'
       }
     }
 
