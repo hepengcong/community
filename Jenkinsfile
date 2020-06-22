@@ -19,13 +19,7 @@ pipeline {
     }
 
     stage('deliver') {
-      agent {
-        docker {
-          image 'jenkins'
-          args '-u root -v /var/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-
-      }
+      agent any
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
           sh '''pwd
