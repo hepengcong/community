@@ -19,6 +19,12 @@ pipeline {
     }
 
     stage('deliver') {
+      agent {
+        docker {
+          image 'centos'
+        }
+
+      }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
           sh '''pwd
