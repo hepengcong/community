@@ -11,9 +11,10 @@ spring:
     user:
       name: admin
       password: admin
-#  redis:
-#    host: 139.196.21.25
-#    port: 6371
+
+  redis:
+    host: 139.196.21.25
+    port: 6371
 #    host: http://139.196.21.25/
 #    password: root:123456
 
