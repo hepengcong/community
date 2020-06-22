@@ -2,7 +2,7 @@ pipeline {
   agent {
     docker {
       image 'maven'
-      args '-v /root/.m2:/root/.m2'
+      args '-u root -v /root/.m2:/root/.m2'
     }
 
   }
@@ -20,25 +20,12 @@ pipeline {
     }
 
     stage('image') {
-      agent {
-        dockerfile {
-          filename 'Dockerfile'
-        }
-
-      }
       steps {
-        sh '''cd /var/jenkins_home/workspace/community_master
-docker build -t communitydemo .'''
+        sh 'docker build -t communitydemo .'
       }
     }
 
     stage('push') {
-      agent {
-        docker {
-          image '50c5ba2ce935'
-        }
-
-      }
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
           sh 'docker login registry.vena.network -u $user -p $pass'
@@ -50,7 +37,13 @@ docker build -t communitydemo .'''
     }
 
     stage('deliver') {
-      agent any
+      agent {
+        docker {
+          image 'jenkins'
+          args '-u root -v /var/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+
+      }
       steps {
         sshagent(credentials: ['dev_host']) {
           sh 'ssh root@139.196.21.25'
