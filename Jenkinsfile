@@ -19,7 +19,6 @@ pipeline {
     }
 
     stage('deliver') {
-      agent any
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
           sh '''pwd
