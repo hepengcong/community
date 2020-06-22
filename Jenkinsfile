@@ -27,10 +27,13 @@ pipeline {
 
       }
       steps {
-        withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')])
-        sh '''pwd
+        withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
+          sh '''pwd
 whoami
 ssh root@139.196.21.25 -u $username -p $password'''
+          sh 'ip add'
+        }
+
       }
     }
 
