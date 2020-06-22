@@ -5,8 +5,6 @@ pipeline {
       args '-u root -v /root/.m2:/root/.m2'
     }
 
-  }
-
     stage('deliver') {
       agent {
         docker {
