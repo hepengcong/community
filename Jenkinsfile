@@ -21,8 +21,7 @@ pipeline {
     stage('deliver') {
       agent {
         docker {
-          image 'jenkins'
-          args '-u root -v /var/jenkins_home:/var/jenkins_home -v /var/run/docker.sock:/var/run/docker.sock'
+          image 'centos'
         }
 
       }
