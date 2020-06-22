@@ -27,7 +27,10 @@ pipeline {
 
       }
       steps {
-        sh 'ssh root@139.196.21.25'
+          withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]){
+                  sh 'ssh root@139.196.21.25 -u username -p password'
+          }
+
       }
     }
 
