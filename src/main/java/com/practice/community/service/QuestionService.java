@@ -26,7 +26,7 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
 
-    @Cacheable(value = "List<Question>",unless = "#result eq null ")
+//    @Cacheable(value = "List<Question>",unless = "#result eq null ")
     public List<Question> list(QuestionDTO query) {
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
         Page<Question> page = new Page<>(query.getPage(), query.getSize());
@@ -44,7 +44,7 @@ public class QuestionService {
         questionMapper.insert(question);
     }
 
-    @Cacheable(value = "List<Question>",unless = "#result eq null ")
+//    @Cacheable(value = "List<Question>",unless = "#result eq null ")
     public List<Question> listById(Integer userId, QuestionDTO query) {
         QueryWrapper<Question> wrapper = new QueryWrapper<>();
         wrapper.eq("creator", userId);
@@ -53,7 +53,7 @@ public class QuestionService {
         return iPage.getRecords();
     }
 
-    @Cacheable(value = "Question",unless = "#result eq null ")
+//    @Cacheable(value = "Question",unless = "#result eq null ")
     public Question selectById(Integer id) {
         redisUtil.zincr(id);
         return questionMapper.selectById(id);
