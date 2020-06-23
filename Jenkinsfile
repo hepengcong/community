@@ -7,24 +7,23 @@ pipeline {
 
   }
   stages {
-
-      stage('built') {
-        steps {
-          sh 'mvn clean package'
-        }
+    stage('built') {
+      steps {
+        sh 'mvn clean package'
       }
+    }
 
-      stage('test') {
-        steps {
-          sh 'mvn test'
-        }
+    stage('test') {
+      steps {
+        sh 'mvn test'
       }
+    }
 
-      stage('image') {
-        steps {
-          sh 'docker build -t communitydemo .'
-        }
+    stage('image') {
+      steps {
+        sh 'docker build -t communitydemo .'
       }
+    }
 
     stage('push') {
       steps {
