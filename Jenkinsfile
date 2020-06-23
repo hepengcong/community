@@ -29,7 +29,7 @@ pipeline {
           remote.password = 'Hpchpc123'
           remote.allowAnyHosts = true
 
-          sshCommand remote: remote, command: "sudu docker ps"
+          sshCommand remote: remote, command: "sudo docker ps"
         }
 
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
