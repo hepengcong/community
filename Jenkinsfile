@@ -28,8 +28,10 @@ pipeline {
                   remote.user = 'root'
                   remote.password = 'Hpchpc123'
                   remote.allowAnyHosts = true
+
+                   sshCommand remote: remote, command: "ls"
               }
-                sshCommand remote: remote, command: "ls"
+
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
 
           sh '''pwd
