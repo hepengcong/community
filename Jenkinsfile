@@ -21,19 +21,18 @@ pipeline {
     stage('deliver') {
       agent any
       steps {
-       script  {
-                  def remote = [:]
-                  remote.name = 'test'
-                  remote.host = '139.196.21.25'
-                  remote.user = 'root'
-                  remote.password = 'Hpchpc123'
-                  remote.allowAnyHosts = true
+        script {
+          def remote = [:]
+          remote.name = 'test'
+          remote.host = '139.196.21.25'
+          remote.user = 'root'
+          remote.password = 'Hpchpc123'
+          remote.allowAnyHosts = true
 
-                   sshCommand remote: remote, command: "ls"
-              }
+          sshCommand remote: remote, command: "ls"
+        }
 
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
-
           sh '''pwd
 whoami
 ssh root@139.196.21.25 -u $username -p $password'''
