@@ -20,8 +20,8 @@ pipeline {
 
     stage('deliver') {
       agent {
-        tool {
-          'sshagent'
+        docker {
+          image 'centos'
         }
 
       }
