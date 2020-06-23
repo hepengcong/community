@@ -29,13 +29,12 @@ pipeline {
           remote.password = 'Hpchpc123'
           remote.allowAnyHosts = true
 
-          sshCommand remote: remote, command: "ls"
+          sshCommand remote: remote, command: "sudu docker ps"
         }
 
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
           sh '''pwd
-whoami
-ssh root@139.196.21.25 -u $username -p $password'''
+whoami'''
           sh 'ip add'
         }
 
