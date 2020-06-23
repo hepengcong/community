@@ -7,6 +7,26 @@ pipeline {
 
   }
   stages {
+
+    stages {
+      stage('built') {
+        steps {
+          sh 'mvn clean package'
+        }
+      }
+
+      stage('test') {
+        steps {
+          sh 'mvn test'
+        }
+      }
+
+      stage('image') {
+        steps {
+          sh 'docker build -t communitydemo .'
+        }
+      }
+
     stage('push') {
       steps {
         withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
