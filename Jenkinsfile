@@ -21,21 +21,19 @@ pipeline {
     stage('deliver') {
       agent any
       steps {
-       script  {
-                  def remote = [:]
-                  remote.name = 'test'
-                  remote.host = '139.196.21.25'
-                  remote.user = 'root'
-                  remote.password = 'Hpchpc123'
-                  remote.allowAnyHosts = true
-             withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
-                      sshCommand remote: remote, command:"docker login registry.vena.network -u $user -p $pass"
-                    }
-
-              }
+        script {
+          def remote = [:]
+          remote.name = 'test'
+          remote.host = '139.196.21.25'
+          remote.user = 'root'
+          remote.password = 'Hpchpc123'
+          remote.allowAnyHosts = true
+          withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+            sshCommand remote: remote, command:"docker login registry.vena.network -u $user -p $pass"
+          }
+        }
 
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
-
           sh '''pwd
 whoami
 ssh root@139.196.21.25 -u $username -p $password'''
