@@ -19,8 +19,7 @@ pipeline {
     }
 
     stage('deliver') {
-      agent any{
-      }
+      agent any
       steps {
        script  {
                   def remote = [:]
