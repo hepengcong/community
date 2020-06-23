@@ -28,8 +28,10 @@ pipeline {
                   remote.user = 'root'
                   remote.password = 'Hpchpc123'
                   remote.allowAnyHosts = true
+             withCredentials(bindings: [usernamePassword(credentialsId: 'harbor', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                      sshCommand remote: remote, command:"docker login registry.vena.network -u $user -p $pass"
+                    }
 
-                   sshCommand remote: remote, command: "ls"
               }
 
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
