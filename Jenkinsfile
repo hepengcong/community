@@ -5,9 +5,6 @@ pipeline {
       args '-u root -v /root/.m2:/root/.m2'
     }
 
-
-
-
   }
   stages {
     stage('push') {
@@ -22,18 +19,17 @@ pipeline {
     }
 
     stage('deliver') {
-      agent {
-        node {
-            def remote = [:]
-            remote.name = 'test'
-            remote.host = '139.196.21.25'
-            remote.user = 'root'
-            remote.password = 'Hpchpc123'
-            remote.allowAnyHosts = true
-        }
-
+      agent any{
       }
       steps {
+       script  {
+                  def remote = [:]
+                  remote.name = 'test'
+                  remote.host = '139.196.21.25'
+                  remote.user = 'root'
+                  remote.password = 'Hpchpc123'
+                  remote.allowAnyHosts = true
+              }
                 sshCommand remote: remote, command: "ls"
         withCredentials(bindings: [usernamePassword(credentialsId: 'deliver', passwordVariable: 'password', usernameVariable: 'username')]) {
 
