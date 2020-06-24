@@ -7,8 +7,6 @@ import com.practice.community.dto.QuestionDTO;
 import com.practice.community.entity.Question;
 import com.practice.community.mapper.QuestionMapper;
 import com.practice.community.util.RedisUtil;
-import com.practice.community.util.SecurityUtil;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
@@ -35,9 +33,9 @@ public class QuestionService {
     }
 
     public void insert(Question question) {
-        if (SecurityUtil.getUserId() == null || SecurityUtil.getUserId().equals(""))
-            throw new RuntimeException("没有登录");
-        question.setCreator(SecurityUtil.getUserId());
+//        if (SecurityUtil.getUserId() == null || SecurityUtil.getUserId().equals(""))
+//            throw new RuntimeException("没有登录");
+//        question.setCreator(SecurityUtil.getUserId());
 
         question.setGmtCreate(System.currentTimeMillis());
         question.setGmtModified(question.getGmtCreate());

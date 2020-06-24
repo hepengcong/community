@@ -1,7 +1,8 @@
 package com.practice.community.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.practice.community.entity.User;
+
+import com.practice.community.shiro.bean.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;

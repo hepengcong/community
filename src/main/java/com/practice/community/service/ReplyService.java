@@ -7,8 +7,6 @@ import com.practice.community.dto.ReplyDTO;
 import com.practice.community.entity.Reply;
 import com.practice.community.mapper.QuestionMapper;
 import com.practice.community.mapper.ReplyMapper;
-import com.practice.community.util.SecurityUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -24,16 +22,16 @@ public class ReplyService {
 
     public void insert(Reply reply) {
         reply.setCreateTime(new Date());
-        reply.setCreatorId(SecurityUtil.getUserId());
+//        reply.setCreatorId(SecurityUtil.getUserId());
         questionMapper.updateComment(reply.getQuestionId());
         replyMapper.insert(reply);
     }
 
     public void delete(Reply reply) {
         QueryWrapper<Reply> wrapper = new QueryWrapper<>();
-        wrapper.eq("creator_id", SecurityUtil.getUserId())
-                .eq("id", reply.getId())
-                .eq("question_id", reply.getQuestionId());
+//        wrapper.eq("creator_id", SecurityUtil.getUserId())
+//                .eq("id", reply.getId())
+//                .eq("question_id", reply.getQuestionId());
         replyMapper.delete(wrapper);
     }
 
@@ -43,8 +41,8 @@ public class ReplyService {
 
 //        replyMapper.listByTime(reply,SecurityUtil.getUserId());
 //        BeanUtils.copyProperties(page,iPage);
-        List<Reply> list = replyMapper.listByTime(reply, SecurityUtil.getUserId());
-        BeanUtils.copyProperties(list, wrapper);
+//        List<Reply> list = replyMapper.listByTime(reply, SecurityUtil.getUserId());
+//        BeanUtils.copyProperties(list, wrapper);
         wrapper.orderByDesc("create_time");
         IPage<Reply> iPage = replyMapper.selectPage(page, wrapper);
         return iPage.getRecords();
